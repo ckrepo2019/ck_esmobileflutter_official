@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "563138394872",
+    "project_id": "push-notification-b443f",
+    "storage_bucket": "push-notification-b443f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563138394872:android:cd035b687f1d56d5e8990d",
+        "android_client_info": {
+          "package_name": "com.ckessentiel.pushtrial"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvqHyb2WHQaDtCbc_dunrfAVemasi9AZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
