@@ -239,13 +239,32 @@ class _ClassScheduleScreenState extends State<ClassScheduleScreen> {
       groupedItems[item.month]!.add(item);
     }
 
-    groupedItems.forEach((key, value) {
-      value.sort((a, b) {
+    // groupedItems.forEach((key, value) {
+    //   value.sort((a, b) {
+    //     final timeA = parseTime(a.start);
+    //     final timeB = parseTime(b.start);
+    //     return timeA.compareTo(timeB);
+    //   });
+    // });
+
+    // Remove duplicates within each day and sort by time
+  groupedItems.forEach((key, value) {
+    // Create unique items using a map
+    final uniqueItems = <String, SchedItem>{};
+    for (var item in value) {
+      final uniqueKey =
+          '${item.subject}_${item.start}_${item.end}_${item.room}_${item.teacher}';
+      uniqueItems[uniqueKey] = item;
+    }
+
+    // Replace the list with unique sorted items
+    groupedItems[key] = uniqueItems.values.toList()
+      ..sort((a, b) {
         final timeA = parseTime(a.start);
         final timeB = parseTime(b.start);
         return timeA.compareTo(timeB);
       });
-    });
+  });
 
     return groupedItems;
   }
@@ -287,7 +306,10 @@ class _ClassScheduleScreenState extends State<ClassScheduleScreen> {
                   }
                 }
 
-                months.add(el['day']);
+                // Add day only if it's not already in the list (avoid duplicates)
+                if (!months.contains(el['day'])) {
+                  months.add(el['day']);
+                }
               }
             }
 
@@ -349,6 +371,7 @@ class _ClassScheduleScreenState extends State<ClassScheduleScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    spacing: 2.0,
                     children: [
                       Flexible(
                         child: DropdownButtonFormField2<String>(
@@ -434,7 +457,7 @@ class _ClassScheduleScreenState extends State<ClassScheduleScreen> {
                       ),
 
                       if (levelid == 14 || levelid == 15 || levelid >= 17) ...[
-                        const SizedBox(width: 10.0),
+                        // const SizedBox(width: 10.0),
                         Flexible(
                           child: DropdownButtonFormField2<String>(
                             hint: Text(
@@ -717,19 +740,30 @@ class _ClassScheduleScreenState extends State<ClassScheduleScreen> {
   }
 
   Widget buildFilteredScheduleList() {
-    final filteredList =
-        selectedMonth == 'All'
-              ? List.from(listOfItem2)
-              : listOfItem2
-                    .where(
-                      (item) =>
-                          item.month.toLowerCase() ==
-                          selectedMonth.toLowerCase(),
-                    )
-                    .toList()
-          ..sort((a, b) => parseTime(a.start).compareTo(parseTime(b.start)));
+    // Filter by selected month
+    List<SchedItem> filteredList = selectedMonth == 'All'
+        ? List.from(listOfItem2)
+        : listOfItem2
+            .where(
+              (item) =>
+                  item.month.toLowerCase() ==
+                  selectedMonth.toLowerCase(),
+            )
+            .toList();
 
-    if (filteredList.isEmpty) {
+    // Remove duplicates by creating a unique set based on key attributes
+    final uniqueItems = <String, SchedItem>{};
+    for (var item in filteredList) {
+      final key =
+          '${item.month}_${item.subject}_${item.start}_${item.end}_${item.room}_${item.teacher}';
+      uniqueItems[key] = item;
+    }
+
+    // Convert back to list and sort by time
+    final uniqueFilteredList = uniqueItems.values.toList()
+      ..sort((a, b) => parseTime(a.start).compareTo(parseTime(b.start)));
+
+    if (uniqueFilteredList.isEmpty) {
       return Center(
         child: Text(
           "No available schedule",
@@ -744,9 +778,9 @@ class _ClassScheduleScreenState extends State<ClassScheduleScreen> {
     }
 
     return ListView.builder(
-      itemCount: filteredList.length,
+      itemCount: uniqueFilteredList.length,
       itemBuilder: (context, index) {
-        final item = filteredList[index];
+        final item = uniqueFilteredList[index];
 
         return Container(
           margin: const EdgeInsets.only(bottom: 16.0),
