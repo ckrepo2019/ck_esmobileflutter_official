@@ -96,6 +96,7 @@ class BillingInformationState extends State<BillingInformationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    spacing: 2.0,
                     children: [
                       Flexible(
                         flex: 1,
@@ -129,8 +130,8 @@ class BillingInformationState extends State<BillingInformationPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10.0),
-                      if (levelid >= 17)
+                      // const SizedBox(width: 10.0),
+                     if (levelid == 14 || levelid == 15 || levelid >= 17) 
                         Flexible(
                           flex: 1,
                           child: DropdownButtonFormField2<String>(
@@ -197,14 +198,16 @@ class BillingInformationState extends State<BillingInformationPage> {
                                   Positioned(
                                     top: 16,
                                     right: 16,
-                                    child: Text(
-                                      "SY: ${schoolYear.firstWhere((year) => year.id.toString() == selectedYear).sydesc}"
-                                      "${levelid > 13 ? "\nSem: ${schoolSem.firstWhere((sem) => sem.id.toString() == selectedSem).semester}" : ""}",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                      ),
-                                    ),
+                                    child: selectedYear.isNotEmpty && selectedSem.isNotEmpty
+                                        ? Text(
+                                            "SY: ${schoolYear.isNotEmpty ? schoolYear.firstWhere((year) => year.id.toString() == selectedYear, orElse: () => schoolYear.first).sydesc : ''}"
+                                            "${levelid > 13 && schoolSem.isNotEmpty ? "\nSem: ${schoolSem.firstWhere((sem) => sem.id.toString() == selectedSem, orElse: () => schoolSem.first).semester}" : ""}",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                            ),
+                                          )
+                                        : const SizedBox.shrink(),
                                   ),
                                   const Positioned(
                                     bottom: 16,
@@ -409,8 +412,19 @@ class BillingInformationState extends State<BillingInformationPage> {
 
     schoolYear.sort((a, b) => a.sydesc.compareTo(b.sydesc));
 
-    var activeYear = schoolYear.firstWhere((year) => year.isactive == 1);
-    var activeSem = schoolSem.firstWhere((sem) => sem.isactive == 1);
+    // Fixed: Use firstWhere with error handling to safely find active items
+    SchoolYear? activeYear;
+    Sem? activeSem;
+    try {
+      activeYear = schoolYear.firstWhere((year) => year.isactive == 1);
+    } catch (e) {
+      activeYear = null;
+    }
+    try {
+      activeSem = schoolSem.firstWhere((sem) => sem.isactive == 1);
+    } catch (e) {
+      activeSem = null;
+    }
 
     if (activeYear != null && activeSem != null) {
       selectedYear = activeYear.id.toString();
@@ -418,6 +432,11 @@ class BillingInformationState extends State<BillingInformationPage> {
     } else if (schoolYear.isNotEmpty && schoolSem.isNotEmpty) {
       selectedYear = schoolYear.last.id.toString();
       selectedSem = schoolSem.first.id.toString();
+    } else {
+      // Fallback to empty or default values
+      selectedYear = '';
+      selectedSem = '';
+      return; // Exit early if no data available
     }
 
     syid = int.parse(selectedYear);
@@ -464,12 +483,24 @@ class BillingInformationState extends State<BillingInformationPage> {
       Iterable list = json.decode(response.body);
       data = list.map((model) => Ledger.fromJson(model)).toList();
 
-      Ledger? totalLedger = data.firstWhere(
-        (item) => item.particulars.startsWith('TOTAL:'),
-      );
+      // Fixed: Use firstWhere with error handling to prevent "Bad state: no element"
+      Ledger? totalLedger;
+      try {
+        totalLedger = data.firstWhere(
+          (item) => item.particulars.startsWith('TOTAL:'),
+        );
+      } catch (e) {
+        totalLedger = null;
+      }
 
-      totalBalance = 'Php ${totalLedger.balance}';
-      totalPayment = 'Php ${totalLedger.payment}';
+      if (totalLedger != null) {
+        totalBalance = 'Php ${totalLedger.balance}';
+        totalPayment = 'Php ${totalLedger.payment}';
+      } else {
+        // Default values if TOTAL row is not found
+        totalBalance = 'Php 0.00';
+        totalPayment = 'Php 0.00';
+      }
 
       loading = false;
     });

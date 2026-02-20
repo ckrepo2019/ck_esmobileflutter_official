@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
     {'icon': Icons.payments_outlined, 'label': 'Enrollment'},
   ];
 
+  int _carouselRefreshKey = 0;
   late AnimationController _animationController;
   int _notificationCount = 0;
   User user = UserData.myUser;
@@ -91,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await _loadSelectedSchool();
     setState(() {
       loading = true;
+      _carouselRefreshKey++; // Increment key to rebuild CarouselCard
     });
     await getUser();
     await getLogin();
@@ -316,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 24),
-                      const CarouselCard(),
+                      CarouselCard(key: ValueKey(_carouselRefreshKey)),
                       const SizedBox(height: 24),
                       const Text(
                         'Features',

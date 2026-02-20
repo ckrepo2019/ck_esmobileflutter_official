@@ -23,12 +23,12 @@ class PaymentPageState extends State<PaymentPage>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   User user = UserData.myUser;
-  int syid = 1;
+  int syid = 0; // 0 means "All School Years"
   int semid = 1;
   int id = 0;
   String sid = '0';
   String amountpaid = '0.00';
-  String selectedYear = '';
+  String selectedYear = '0'; // Default to "All"
   String selectedSem = '';
   List<Transactions> trans = [];
   List<Payments> payments = [];
@@ -72,8 +72,18 @@ class PaymentPageState extends State<PaymentPage>
     });
   }
 
+  void _initializeDummyData() {
+    // Initialize with dummy school year data
+    schoolYear = [
+      SchoolYear(id: 1, sydesc: '2024-2025', sdate: '2024-06-01', edate: '2025-03-31', isactive: 1),
+      SchoolYear(id: 2, sydesc: '2023-2024', sdate: '2023-06-01', edate: '2024-03-31', isactive: 0),
+      SchoolYear(id: 3, sydesc: '2022-2023', sdate: '2022-06-01', edate: '2023-03-31', isactive: 0),
+    ];
+  }
+
   Future<void> _initializeData() async {
     await getUser();
+    await getYearandSem();
     getOnlinePayments();
     getSchoolInfo();
     getTransactions();
@@ -97,6 +107,34 @@ class PaymentPageState extends State<PaymentPage>
     });
   }
 
+  Future<void> getYearandSem() async {
+    try {
+      final response = await CallApi().getYearandSem();
+      final Map<String, dynamic> responseData = json.decode(response.body);
+
+      schoolYear = (responseData['sy'] as List)
+          .map((data) => SchoolYear.fromJson(data))
+          .toList();
+      schoolSem = (responseData['semester'] as List)
+          .map((data) => Sem.fromJson(data))
+          .toList();
+
+      schoolYear.sort((a, b) => a.sydesc.compareTo(b.sydesc));
+
+      setState(() {
+        // Default to "All School Years" (syid = 0)
+        selectedYear = '0';
+        syid = 0;
+      });
+
+      print('School Year loaded with "All" selected by default');
+    } catch (e) {
+      print('Error loading school year and semester: $e');
+      // Fallback to dummy data if API fails
+      _initializeDummyData();
+    }
+  }
+
   getTransactions() async {
     final response = await CallApi().getTransactions(id);
 
@@ -111,16 +149,26 @@ class PaymentPageState extends State<PaymentPage>
           .map((model) => Transactions.fromJson(model))
           .toList();
 
-      allTransactions.sort(
+      // Filter transactions by selected school year (syid)
+      // If syid is 0, show all transactions
+      List<Transactions> filteredTransactions = syid == 0
+          ? allTransactions
+          : allTransactions
+              .where((transaction) => transaction.syid == syid)
+              .toList();
+
+      filteredTransactions.sort(
         (a, b) =>
             DateTime.parse(b.transdate).compareTo(DateTime.parse(a.transdate)),
       );
 
       setState(() {
-        trans = allTransactions;
+        trans = filteredTransactions;
 
         print("User ID: $id");
-        print("Total transactions received: ${allTransactions.length}");
+        print("Selected syid: $syid");
+        print("Filter: ${syid == 0 ? 'All School Years' : 'School Year ID: $syid'}");
+        print("Total transactions: ${filteredTransactions.length}");
       });
     }
   }
@@ -134,13 +182,24 @@ class PaymentPageState extends State<PaymentPage>
         return;
       }
       Iterable list = json.decode(response.body);
+      
+      List<Payments> allPayments = list.map((model) => Payments.fromJson(model)).toList();
+      
+      // Filter payments by selected school year (syid)
+      // If syid is 0, show all payments
+      List<Payments> filteredPayments = syid == 0
+          ? allPayments
+          : allPayments
+              .where((payment) => payment.syid == syid)
+              .toList();
+      
       setState(() {
-        payments = list.map((model) => Payments.fromJson(model)).toList();
+        payments = filteredPayments;
       });
 
-      payments.forEach((payment) {
-        // print('Payment ID: ${payment.id}, Status: ${payment.getStatus()}');
-      });
+      print("Selected syid: $syid");
+      print("Filter: ${syid == 0 ? 'All School Years' : 'School Year ID: $syid'}");
+      print("Total payments: ${filteredPayments.length}");
     }
   }
 
@@ -191,9 +250,68 @@ class PaymentPageState extends State<PaymentPage>
             ),
           ),
         ),
-        body: TabBarView(
-          controller: _tabController,
-          children: [_buildTransactionsTab(), _buildUploadedPaymentTab()],
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: DropdownButtonFormField2<String>(
+                value: selectedYear,
+                hint: const Text(
+                  'Select School Year',
+                  style: TextStyle(fontSize: 10),
+                ),
+                items: [
+                  // "All School Years" option
+                  const DropdownMenuItem(
+                    value: '0',
+                    child: Text(
+                      'All School Years',
+                      style: TextStyle(fontSize: 10),
+                    ),
+                  ),
+                  // Individual school years
+                  ...schoolYear
+                      .map(
+                        (option) => DropdownMenuItem(
+                          value: option.id.toString(),
+                          child: Text(
+                            option.sydesc,
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ]
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      selectedYear = value;
+                      syid = int.parse(value);
+                    });
+                    print('Selected School Year: $selectedYear, syid: $syid');
+                    // Fetch transactions and online payments for the selected year
+                    getTransactions();
+                    getOnlinePayments();
+                  }
+                },
+                decoration: const InputDecoration(
+                  labelText: 'School Year',
+                  labelStyle: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [_buildTransactionsTab(), _buildUploadedPaymentTab()],
+              ),
+            ),
+          ],
         ),
         floatingActionButton: _tabController?.index == 1
             ? ClipOval(
@@ -494,14 +612,19 @@ class PaymentPageState extends State<PaymentPage>
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            '${transaction.paytype} - OR#: ${transaction.ornum}',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
-                                              fontSize: 12,
+                                          Flexible(
+                                            child: Text(
+                                              '${transaction.paytype} - OR#: ${transaction.ornum}',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
                                             ),
                                           ),
+                                          const SizedBox(width: 8),
                                           Text(
                                             'Php $formattedAmount',
                                             style: const TextStyle(

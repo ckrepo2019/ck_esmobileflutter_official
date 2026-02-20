@@ -81,24 +81,55 @@ class _CarouselCardState extends State<CarouselCard> {
         semid = latestInfo.semid;
         syDesc = latestInfo.sydesc;
         sem = latestInfo.semester;
+        print('EnrolledStud - id: $id, syid: $syid, semid: $semid, syDesc: $syDesc');
       }
     }
   }
 
   Future<void> getLedger() async {
+    print('getLedger called with - id: $id, syid: $syid, semid: $semid');
+    
     final response = await CallApi().getStudLedger(id, syid, semid);
+    
+    // Print raw response data
+    print('Response Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+    
+    if (response.statusCode != 200) {
+      print('Error: API returned status ${response.statusCode}');
+      return;
+    }
+    
     final list = json.decode(response.body);
+    print('Decoded JSON: $list');
+    
     data = (list as List).map((e) => Ledger.fromJson(e)).toList();
+    print('Parsed data: $data');
+    print('Data length: ${data.length}');
+
+    // Debug: Print each entry's particulars field to see exact content
+    for (int i = 0; i < data.length; i++) {
+      print('Entry $i: particulars="${data[i].particulars}", balance="${data[i].balance}"');
+    }
 
     final total = data.firstWhere(
-      (e) => e.particulars.startsWith('TOTAL:'),
-      orElse: () => Ledger(
-        particulars: 'TOTAL:',
-        balance: '0.00',
-        payment: '0.00',
-        amount: '',
-      ),
+      (e) {
+        final isTotal = e.particulars.trim().toUpperCase().startsWith('TOTAL:');
+        print('Checking: "${e.particulars}" -> isTotal=$isTotal');
+        return isTotal;
+      },
+      orElse: () {
+        print('TOTAL not found, using default');
+        return Ledger(
+          particulars: 'TOTAL:',
+          balance: '0.00',
+          payment: '0.00',
+          amount: '',
+        );
+      },
     );
+
+    print('Final Total found: particulars="${total.particulars}", balance="${total.balance}"');
 
     setState(() {
       totalBalance = '₱ ${total.balance}';

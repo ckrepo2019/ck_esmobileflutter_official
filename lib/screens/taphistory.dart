@@ -151,8 +151,10 @@ class _TapHistoryScreenState extends State<TapHistoryScreen> {
                 children: [
                   Row(
                     children: [
-                      Flexible(
+                      Expanded(
+                        flex: 3,
                         child: DropdownButtonFormField2<String>(
+                          isExpanded: true,
                           hint: const Text(
                             'Select Month',
                             style: TextStyle(fontSize: 12),
@@ -178,7 +180,8 @@ class _TapHistoryScreenState extends State<TapHistoryScreen> {
                                   value: month,
                                   child: Text(
                                     month,
-                                    style: TextStyle(fontSize: 12),
+                                    style: const TextStyle(fontSize: 12),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 );
                               }).toList(),
@@ -195,32 +198,56 @@ class _TapHistoryScreenState extends State<TapHistoryScreen> {
                               fontWeight: FontWeight.w500,
                             ),
                             border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            isDense: true,
+                          ),
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            height: 45,
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: 300,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(horizontal: 12),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Flexible(
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 2,
                         child: DropdownButtonFormField2<String>(
+                          isExpanded: true,
                           hint: const Text(
-                            'Select State',
+                            'State',
                             style: TextStyle(fontSize: 12),
                           ),
                           value: selectedState == 'ALL' ? null : selectedState,
                           items: [
                             DropdownMenuItem(
                               value: 'ALL',
-                              child: Text(
+                              child: const Text(
                                 'ALL',
                                 style: TextStyle(fontSize: 12),
                               ),
                             ),
                             DropdownMenuItem(
                               value: 'IN',
-                              child: Text('IN', style: TextStyle(fontSize: 12)),
+                              child: const Text(
+                                'IN',
+                                style: TextStyle(fontSize: 12),
+                              ),
                             ),
                             DropdownMenuItem(
                               value: 'OUT',
-                              child: Text(
+                              child: const Text(
                                 'OUT',
                                 style: TextStyle(fontSize: 12),
                               ),
@@ -239,6 +266,25 @@ class _TapHistoryScreenState extends State<TapHistoryScreen> {
                               fontWeight: FontWeight.w500,
                             ),
                             border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            isDense: true,
+                          ),
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            height: 45,
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(horizontal: 12),
                           ),
                         ),
                       ),

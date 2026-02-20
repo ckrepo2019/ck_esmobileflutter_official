@@ -399,6 +399,7 @@ class _ReportCardScreenState extends State<ReportCardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    spacing: 2.0,
                     children: [
                       Flexible(
                         child: DropdownButtonFormField2<String>(
@@ -482,7 +483,7 @@ class _ReportCardScreenState extends State<ReportCardScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10.0),
+                      // const SizedBox(width: 10.0),
                       if (gradelevel >= 14 && gradelevel != 16) ...[
                         Flexible(
                           child: DropdownButtonFormField2<String>(

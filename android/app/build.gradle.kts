@@ -54,6 +54,8 @@ android {
             cmake {
                 cppFlags.add("-std=c++17")
                 arguments.add("-DANDROID_STL=c++_shared")
+                // Enable 16 KB page size support
+                arguments.add("-DANDROID_SUPPORT_FLEX_PAGE_SIZES=ON")
             }
         }
     }
@@ -85,6 +87,9 @@ android {
     packagingOptions {
         pickFirst("**/libc++_shared.so")
         pickFirst("**/libjsc.so")
+        // Support 16 KB page size variants
+        pickFirst("**/libc++_shared.so.16kb")
+        pickFirst("**/libjsc.so.16kb")
     }
 
     // Support for 16 KB page sizes

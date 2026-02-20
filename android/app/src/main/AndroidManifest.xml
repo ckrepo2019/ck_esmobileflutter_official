@@ -21,6 +21,12 @@
         android:icon="@drawable/essentiel"
         android:largeHeap="true"
         android:vmSafeMode="true">
+        
+        <!-- Declare support for 16 KB page sizes -->
+        <property
+            android:name="android.app.property.SUPPORT_16KB_PAGE_SIZES"
+            android:value="true" />
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"

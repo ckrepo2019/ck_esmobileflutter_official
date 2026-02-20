@@ -46,6 +46,7 @@ class _LoginState extends State<LoginScreen> {
   Future<void> getSchoolInfo() async {
     try {
       final response = await CallApi().getSchoolInfo();
+      print("Response body: ${response.body}");
       final parsedResponse = json.decode(response.body);
       if (parsedResponse is List) {
         setState(() {

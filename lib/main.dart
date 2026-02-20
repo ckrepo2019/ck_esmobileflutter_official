@@ -114,22 +114,25 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       title: 'Student Portal',
+      themeMode: ThemeMode.light, // Force light mode
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFFAFAFA),
         textTheme: GoogleFonts.interTextTheme(),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
         brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFFAFAFA),
-        textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-          brightness: Brightness.dark,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
         ),
-        useMaterial3: true,
-        brightness: Brightness.dark,
+        cardTheme: CardThemeData(
+          color: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
       ),
       // initialRoute: '/schools',
       initialRoute: '/loading',

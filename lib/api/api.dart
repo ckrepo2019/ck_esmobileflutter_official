@@ -647,6 +647,7 @@ class CallApi {
     await _ensureDomainInitialized();
     var fullUrl =
         '$_mainDomain$_studLedger?studid=$studid&syid=$syid&semid=$semid';
+        print('fullUrl: $fullUrl');
     return await http.get(
       Uri.parse(fullUrl),
     );
