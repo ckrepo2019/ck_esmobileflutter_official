@@ -380,7 +380,7 @@ class _ReportCardScreenState extends State<ReportCardScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'REPORT CARD',
+          'REPORT CARD-${gradelevel >= 17 ? 'COLLEGE' : 'SHS'}',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -632,26 +632,42 @@ class _ReportCardScreenState extends State<ReportCardScreen> {
                                                     children: [
                                                       if (gradelevel >= 17)
                                                         Table(
-                                                          columnWidths: const {
-                                                            0: FlexColumnWidth(
-                                                              1,
-                                                            ),
-                                                            1: FlexColumnWidth(
-                                                              1.5,
-                                                            ),
-                                                            2: FlexColumnWidth(
-                                                              1,
-                                                            ),
-                                                            3: FlexColumnWidth(
-                                                              1,
-                                                            ),
-                                                            4: FlexColumnWidth(
-                                                              1,
-                                                            ),
-                                                            5: FlexColumnWidth(
-                                                              1.5,
-                                                            ),
-                                                          },
+                                                          columnWidths:
+                                                              (schoolInfo
+                                                                      .isNotEmpty &&
+                                                                  schoolInfo[0]
+                                                                          .abbreviation ==
+                                                                      'DCC' &&
+                                                                  gradelevel >=
+                                                                      17)
+                                                              ? const {
+                                                                  0: FlexColumnWidth(
+                                                                    2,
+                                                                  ),
+                                                                  1: FlexColumnWidth(
+                                                                    2,
+                                                                  ),
+                                                                }
+                                                              : const {
+                                                                  0: FlexColumnWidth(
+                                                                    1,
+                                                                  ),
+                                                                  1: FlexColumnWidth(
+                                                                    1.5,
+                                                                  ),
+                                                                  2: FlexColumnWidth(
+                                                                    1,
+                                                                  ),
+                                                                  3: FlexColumnWidth(
+                                                                    1,
+                                                                  ),
+                                                                  4: FlexColumnWidth(
+                                                                    1,
+                                                                  ),
+                                                                  5: FlexColumnWidth(
+                                                                    1.5,
+                                                                  ),
+                                                                },
                                                           border:
                                                               TableBorder.all(
                                                                 color: Colors
@@ -665,300 +681,367 @@ class _ReportCardScreenState extends State<ReportCardScreen> {
                                                                       .2,
                                                                     ),
                                                               ),
-                                                              children: const [
-                                                                Padding(
-                                                                  padding:
-                                                                      EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                              children:
+                                                                  (schoolInfo
+                                                                          .isNotEmpty &&
+                                                                      schoolInfo[0]
+                                                                              .abbreviation ==
+                                                                          'DCC' &&
+                                                                      gradelevel >=
+                                                                          17)
+                                                                  ? const [
+                                                                      Padding(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          'Final\nGrade',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    'Prelim',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                                      Padding(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          'Remarks',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    'Midterm',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                                    ]
+                                                                  : const [
+                                                                      Padding(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          'Prelim',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    'Pre\nFinal',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                                      Padding(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          'Midterm',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    'Final',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                                      Padding(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          'Pre\nFinal',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    'Final\nGrade',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                                      Padding(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          'Final',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    'Remarks',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                                      Padding(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          'Final\nGrade',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          'Remarks',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                             ),
                                                             // Data row
                                                             TableRow(
-                                                              children: [
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                              children:
+                                                                  (schoolInfo
+                                                                          .isNotEmpty &&
+                                                                      schoolInfo[0]
+                                                                              .abbreviation ==
+                                                                          'DCC' &&
+                                                                      gradelevel >=
+                                                                          17)
+                                                                  ? [
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          grade.finalstatus ==
+                                                                                  '4'
+                                                                              ? grade.finalgrade
+                                                                              : ' ',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: const TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    grade.prelemstatus ==
-                                                                            '4'
-                                                                        ? grade
-                                                                              .prelemgrade
-                                                                        : ' ',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: const TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          grade.finalstatus ==
+                                                                                  '4'
+                                                                              ? grade.fgremarks
+                                                                              : ' ',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            color:
+                                                                                grade.fgremarks ==
+                                                                                    'PASSED'
+                                                                                ? Colors.green
+                                                                                : Colors.red,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    grade.midtermstatus ==
-                                                                            '4'
-                                                                        ? grade
-                                                                              .midtermgrade
-                                                                        : ' ',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: const TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                                    ]
+                                                                  : [
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          grade.prelemstatus ==
+                                                                                  '4'
+                                                                              ? grade.prelemgrade
+                                                                              : ' ',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: const TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    grade.prefistatus ==
-                                                                            '4'
-                                                                        ? grade
-                                                                              .prefigrade
-                                                                        : ' ',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: const TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          grade.midtermstatus ==
+                                                                                  '4'
+                                                                              ? grade.midtermgrade
+                                                                              : ' ',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: const TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    grade.finalstatus ==
-                                                                            '4'
-                                                                        ? grade
-                                                                              .finalgrade
-                                                                        : ' ',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: const TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          grade.prefistatus ==
+                                                                                  '4'
+                                                                              ? grade.prefigrade
+                                                                              : ' ',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: const TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    grade.prelemstatus ==
-                                                                                '4' &&
-                                                                            grade.midtermstatus ==
-                                                                                '4' &&
-                                                                            grade.prefistatus ==
-                                                                                '4' &&
-                                                                            grade.finalstatus ==
-                                                                                '4'
-                                                                        ? grade
-                                                                              .fg
-                                                                        : ' ',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: const TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            8.0,
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          grade.finalstatus ==
+                                                                                  '4'
+                                                                              ? grade.finalgrade
+                                                                              : ' ',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: const TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                  child: Text(
-                                                                    grade.prelemstatus ==
-                                                                                '4' &&
-                                                                            grade.midtermstatus ==
-                                                                                '4' &&
-                                                                            grade.prefistatus ==
-                                                                                '4' &&
-                                                                            grade.finalstatus ==
-                                                                                '4'
-                                                                        ? grade
-                                                                              .fgremarks
-                                                                        : ' ',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                      fontFamily:
-                                                                          'Poppins',
-                                                                      fontSize:
-                                                                          12,
-                                                                      color:
-                                                                          grade.fgremarks ==
-                                                                              'PASSED'
-                                                                          ? Colors.green
-                                                                          : Colors.red,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          grade.prelemstatus ==
+                                                                                      '4' &&
+                                                                                  grade.midtermstatus ==
+                                                                                      '4' &&
+                                                                                  grade.prefistatus ==
+                                                                                      '4' &&
+                                                                                  grade.finalstatus ==
+                                                                                      '4'
+                                                                              ? grade.fg
+                                                                              : ' ',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: const TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          vertical:
+                                                                              8.0,
+                                                                        ),
+                                                                        child: Text(
+                                                                          grade.prelemstatus ==
+                                                                                      '4' &&
+                                                                                  grade.midtermstatus ==
+                                                                                      '4' &&
+                                                                                  grade.prefistatus ==
+                                                                                      '4' &&
+                                                                                  grade.finalstatus ==
+                                                                                      '4'
+                                                                              ? grade.fgremarks
+                                                                              : ' ',
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                            fontFamily:
+                                                                                'Poppins',
+                                                                            fontSize:
+                                                                                12,
+                                                                            color:
+                                                                                grade.fgremarks ==
+                                                                                    'PASSED'
+                                                                                ? Colors.green
+                                                                                : Colors.red,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                             ),
                                                           ],
                                                         ),

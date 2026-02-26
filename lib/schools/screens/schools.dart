@@ -40,8 +40,68 @@ class _SchoolScreenState extends State<SchoolScreen> {
   }
 
   Future<void> getSchools() async {
-    final response = await SchoolApi().getSchoolList();
-    Iterable list = json.decode(response.body);
+    // final response = await SchoolApi().getSchoolList();
+
+    var dummyList = [
+      // {
+      //   "id": 85,
+      //   "schoolabrv": "BCC",
+      //   "schoolname": "BINALBAGAN CATHOLIC COLLEGE, INC.",
+      //   "eslink": "http://10.0.0.192:8000/",
+      //   "github_repo": null,
+      //   "deleted": 0,
+      //   "createdby": 0,
+      //   "updatedby": 0,
+      //   "deletedby": 0,
+      //   "createddatetime": "2024-10-30 10:21:38",
+      //   "updateddatetime": "2026-01-30 14:58:10",
+      //   "deleteddatetime": null,
+      //   "schoollogo": "/schoollistlogo/1734413588.png",
+      //   "withSync": 0,
+      //   "projectsetup": 1,
+      //   "withmobile": 0,
+      //   "anydesk": null,
+      //   "withps": 1,
+      //   "withgs": 1,
+      //   "withhs": 1,
+      //   "withshs": 1,
+      //   "withcollege": 1,
+      //   "tapping": "1 990 799 740 (1516512695-new) (Main-1) 1 260 203 013 (Main-2) 1 526 421 65 7 (Main-3) 1823508370(Annex)",
+      //   "anydesk_ip": null,
+      //   "tapping_ip": null
+      // },
+      {
+        "id": 37,
+        "schoolabrv": "DCC",
+        "schoolname": "DAVAO CENTRAL COLLEGE",
+        // "eslink": "https://dcc-essentiel.ckgroup.ph/",
+         "eslink": "http://10.0.0.192:8000/",
+        "github_repo": null,
+        "deleted": 0,
+        "createdby": 0,
+        "updatedby": 0,
+        "deletedby": 0,
+        "createddatetime": "2022-11-22 11:29:25",
+        "updateddatetime": "2025-08-11 08:02:06",
+        "deleteddatetime": null,
+        "schoollogo": "/schoollistlogo/1752106534.png",
+        "withSync": 0,
+        "projectsetup": 2,
+        "withmobile": 0,
+        "anydesk": "1336189654",
+        "withps": 1,
+        "withgs": 1,
+        "withhs": 1,
+        "withshs": 1,
+        "withcollege": 1,
+        "tapping": "836559086 (Main) 659496857 (updated) / (Rasay) new(674109763)",
+        "anydesk_ip": "1336189654 1488330847 (old server)",
+        "tapping_ip": "192.168.103.240 (main)"
+      },
+    ];
+
+    // Iterable list = json.decode(response.body.toString());
+    Iterable list = dummyList.map((item) => item as Map<String, dynamic>);
 
     setState(() {
       schoolNames = list.map((model) => School.fromJson(model)).toList();
