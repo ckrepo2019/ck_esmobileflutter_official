@@ -8,6 +8,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pushtrial/models/school_info.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:pushtrial/models/enrolled_stud.dart';
+import 'package:screen_protector/screen_protector.dart';
 
 class BillingInformationPage extends StatefulWidget {
   const BillingInformationPage({super.key});
@@ -40,11 +41,18 @@ class BillingInformationState extends State<BillingInformationPage> {
   @override
   void initState() {
     super.initState();
+    ScreenProtector.preventScreenshotOn();
     getUser();
     getSchoolInfo();
     getYearandSem();
 
     print('levelid: $levelid');
+  }
+
+  @override
+  void dispose() {
+    ScreenProtector.preventScreenshotOff();
+    super.dispose();
   }
 
   Color hexToColor(String hexString) {
@@ -254,140 +262,195 @@ class BillingInformationState extends State<BillingInformationPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Center(
-                    child: Card(
-                      color: const Color.fromARGB(255, 14, 19, 29),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Row(
-                              children: [
-                                Icon(Icons.money, color: Colors.white),
-                                SizedBox(width: 6),
-                                Text(
-                                  'Payments',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
+                  Card(
+                    color: const Color.fromARGB(255, 14, 19, 29),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(
+                            children: [
+                              Icon(Icons.money, color: Colors.white),
+                              SizedBox(width: 6),
+                              Text(
+                                'Payments',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              totalPayment,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
                               ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            totalPayment,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        return SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minWidth: constraints.maxWidth,
+                  if (schoolInfo.isNotEmpty &&
+                      schoolInfo[0].abbreviation.toUpperCase() == 'SBC') ...[
+                    const SizedBox(height: 8),
+                    const Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.info_outline, size: 12, color: Colors.grey),
+                        SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            'Non-tuition / walk-in cash payments may not be reflected in the total.',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.grey,
+                              fontStyle: FontStyle.italic,
                             ),
-                            child: DataTable(
-                              columnSpacing: constraints.maxWidth < 600
-                                  ? 10.0
-                                  : 20.0,
-                              dividerThickness: 0,
-                              columns: const [
-                                DataColumn(
-                                  label: Text(
-                                    'Particulars',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                      fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  // Header row
+                  const Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Particulars',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 76,
+                        child: Text(
+                          'Amount',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                          ),
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      SizedBox(
+                        width: 76,
+                        child: Text(
+                          'Payments',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                          ),
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(thickness: 0.5),
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: data.length,
+                      separatorBuilder: (_, __) =>
+                          const Divider(thickness: 0.3, height: 1),
+                      itemBuilder: (context, index) {
+                        final ledger = data[index];
+                        final isTotal =
+                            ledger.particulars.startsWith('TOTAL:');
+                        final textColor = ledger.isVoided
+                            ? Colors.grey
+                            : Colors.black;
+                        final textDecoration = ledger.isVoided
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none;
+                        return Padding(
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 6.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      ledger.particulars,
+                                      style: TextStyle(
+                                        color: textColor,
+                                        fontSize: 11,
+                                        fontWeight: isTotal
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        decoration: textDecoration,
+                                        decorationColor: Colors.grey,
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'Amount',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
-                                    'Payments',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                      fontSize: 11,
-                                    ),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ),
-                              ],
-                              rows: data.map((ledger) {
-                                return DataRow(
-                                  cells: [
-                                    DataCell(
+                                    if (ledger.isVoided)
                                       Container(
-                                        width: 90,
-                                        child: Text(
-                                          ledger.particulars,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 11,
+                                        margin: const EdgeInsets.only(top: 2),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 1),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red.shade100,
+                                          border: Border.all(
+                                              color: Colors.red, width: 0.8),
+                                          borderRadius:
+                                              BorderRadius.circular(3),
+                                        ),
+                                        child: const Text(
+                                          'VOID',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 0.5,
                                           ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
                                         ),
                                       ),
-                                    ),
-                                    DataCell(
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            ledger.amount,
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            ledger.payment,
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
                                   ],
-                                );
-                              }).toList(),
-                            ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 76,
+                                child: Text(
+                                  ledger.amount,
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontSize: 11,
+                                    fontWeight: isTotal
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    decoration: textDecoration,
+                                    decorationColor: Colors.grey,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              SizedBox(
+                                width: 76,
+                                child: Text(
+                                  ledger.payment,
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontSize: 11,
+                                    fontWeight: isTotal
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    decoration: textDecoration,
+                                    decorationColor: Colors.grey,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },
@@ -478,31 +541,94 @@ class BillingInformationState extends State<BillingInformationPage> {
   }
 
   Future<void> getLedger() async {
-    final response = await CallApi().getStudLedger(id, syid, semid);
-    setState(() {
-      Iterable list = json.decode(response.body);
-      data = list.map((model) => Ledger.fromJson(model)).toList();
+    try {
+      final response = await CallApi().getStudLedger(id, syid, semid);
+      
+      // Check if the response status is successful
+      if (response.statusCode != 200) {
+        print('Error: API returned status ${response.statusCode}');
+        setState(() {
+          loading = false;
+        });
+        
+        // Show error dialog
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Error'),
+                content: Text(
+                  'Failed to load billing information. The server returned an error (Status: ${response.statusCode}). Please try again later or contact support.',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        return;
+      }
+      
+      setState(() {
+        Iterable list = json.decode(response.body);
+        data = list.map((model) => Ledger.fromJson(model)).toList();
 
-      // Fixed: Use firstWhere with error handling to prevent "Bad state: no element"
-      Ledger? totalLedger;
-      try {
-        totalLedger = data.firstWhere(
-          (item) => item.particulars.startsWith('TOTAL:'),
+        // Fixed: Use firstWhere with error handling to prevent "Bad state: no element"
+        Ledger? totalLedger;
+        try {
+          totalLedger = data.firstWhere(
+            (item) => item.particulars.startsWith('TOTAL:'),
+          );
+        } catch (e) {
+          totalLedger = null;
+        }
+
+        if (totalLedger != null) {
+          totalBalance = 'Php ${totalLedger.balance}';
+          totalPayment = 'Php ${totalLedger.payment}';
+        } else {
+          // Default values if TOTAL row is not found
+          totalBalance = 'Php 0.00';
+          totalPayment = 'Php 0.00';
+        }
+
+        loading = false;
+      });
+    } catch (e) {
+      print('Error fetching ledger: $e');
+      setState(() {
+        loading = false;
+      });
+      
+      // Show error dialog for any exception
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text(
+                'An error occurred while loading billing information: ${e.toString()}. Please check your internet connection and try again.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
         );
-      } catch (e) {
-        totalLedger = null;
       }
-
-      if (totalLedger != null) {
-        totalBalance = 'Php ${totalLedger.balance}';
-        totalPayment = 'Php ${totalLedger.payment}';
-      } else {
-        // Default values if TOTAL row is not found
-        totalBalance = 'Php 0.00';
-        totalPayment = 'Php 0.00';
-      }
-
-      loading = false;
-    });
+    }
   }
 }

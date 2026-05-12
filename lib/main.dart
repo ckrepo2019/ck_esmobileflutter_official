@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pushtrial/push_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pushtrial/schools/screens/schools.dart';
+import 'package:screen_protector/screen_protector.dart';
 import 'firebase_options.dart';
 import '../models/user.dart';
 import 'auth/login.dart';
@@ -50,6 +51,10 @@ void showNotification({required String title, required String body}) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (!kIsWeb) {
+    await ScreenProtector.preventScreenshotOn();
+    await ScreenProtector.protectDataLeakageOn();
+  }
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
