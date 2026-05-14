@@ -37,11 +37,21 @@ class _CarouselCardState extends State<CarouselCard> {
     _initializeData();
   }
 
+  String _schoolVersion = 'v1';
+
   Future<void> _initializeData() async {
     await getUser();
     await getSchoolInfo();
     await getEnrolledStud();
-    await getLedger();
+
+    final prefs = await SharedPreferences.getInstance();
+    _schoolVersion = prefs.getString('schoolVersion') ?? 'v1';
+
+    if (_schoolVersion == 'v2') {
+      await getLedgerV2();
+    } else {
+      await getLedger();
+    }
   }
 
   Future<void> getUser() async {
@@ -59,7 +69,7 @@ class _CarouselCardState extends State<CarouselCard> {
   Future<void> getSchoolInfo() async {
     final response = await CallApi().getSchoolInfo();
     final parsed = json.decode(response.body);
-    if (parsed is List) {
+    if (parsed is List && mounted) {
       setState(() {
         schoolInfo = parsed.map((e) => SchoolInfo.fromJson(e)).toList();
         schoolColor = hexToColor(schoolInfo[0].schoolcolor);
@@ -83,6 +93,29 @@ class _CarouselCardState extends State<CarouselCard> {
         sem = latestInfo.semester;
         print('EnrolledStud - id: $id, syid: $syid, semid: $semid, syDesc: $syDesc');
       }
+    }
+  }
+
+  Future<void> getLedgerV2() async {
+    try {
+      final response = await CallApi().getV2StudLedger(id, syid, semid);
+      if (response.statusCode == 200) {
+        final decoded = json.decode(response.body) as Map<String, dynamic>;
+        if (decoded['success'] == true) {
+          final fees = decoded['school_fees'] as List<dynamic>? ?? [];
+          double total = 0;
+          for (final fee in fees) {
+            total += (fee['total_balance'] ?? 0).toDouble();
+          }
+          if (mounted) {
+            setState(() {
+              totalBalance = '₱ ${total.toStringAsFixed(2)}';
+            });
+          }
+        }
+      }
+    } catch (e) {
+      print('V2 ledger error: $e');
     }
   }
 

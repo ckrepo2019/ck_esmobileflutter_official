@@ -653,6 +653,27 @@ class CallApi {
     );
   }
 
+  getV2ClassSchedule(studid, syid, semid) async {
+    await _ensureDomainInitialized();
+    var fullUrl = '${_mainDomain}api/mobile/api_class_schedule_v2?studid=$studid&syid=$syid&semid=$semid&type=today';
+    print('V2 class schedule url: $fullUrl');
+    return await http.get(Uri.parse(fullUrl));
+  }
+
+  getV2ReportCard(studid, syid, semid) async {
+    await _ensureDomainInitialized();
+    var fullUrl = '${_mainDomain}api/mobile/api_reportcard_v2?studid=$studid&syid=$syid&semid=$semid&type=today';
+    print('V2 report card url: $fullUrl');
+    return await http.get(Uri.parse(fullUrl));
+  }
+
+  getV2StudLedger(studid, syid, semid) async {
+    await _ensureDomainInitialized();
+    var fullUrl = '${_mainDomain}api/mobile/api_student_ledger_v2?studid=$studid&syid=$syid&semid=$semid';
+    print('V2 ledger url: $fullUrl');
+    return await http.get(Uri.parse(fullUrl));
+  }
+
   getEnrollmentInfo(studid) async {
     await _ensureDomainInitialized();
     var fullUrl = '$_mainDomain$_enrollmentInfo?studid=$studid';

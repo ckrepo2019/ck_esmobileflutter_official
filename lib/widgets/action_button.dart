@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/billing_information.dart';
-
+import '../screens/billing_information_v2.dart';
 import '../screens/reportcard.dart';
 import 'package:pushtrial/models/user.dart';
 import 'package:pushtrial/models/user_data.dart';
@@ -42,6 +42,7 @@ class ActionButtonsState extends State<ActionButtons> {
   List<String> years = [];
 
   bool loading = true;
+  String schoolVersion = 'v1';
   List<EnrolledStud> enrolledstud = [];
   List<SchoolInfo> schoolInfo = [];
   Color schoolColor = const Color.fromARGB(0, 255, 255, 255);
@@ -164,7 +165,9 @@ class ActionButtonsState extends State<ActionButtons> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const BillingInformationPage(),
+                    builder: (context) => schoolVersion == 'v2'
+                        ? const BillingInformationV2Page()
+                        : const BillingInformationPage(),
                   ),
                 );
               },
@@ -204,6 +207,11 @@ class ActionButtonsState extends State<ActionButtons> {
   Future<void> getUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final json = preferences.getString('studid');
+    final version = preferences.getString('schoolVersion') ?? 'v1';
+
+    setState(() {
+      schoolVersion = version;
+    });
 
     if (json != null) {
       setState(() {

@@ -1804,9 +1804,11 @@ class _SchoolScreenState extends State<SchoolScreen> {
     });
   }
 
-  Future<void> _storeSelectedSchool(String eslink) async {
+  Future<void> _storeSelectedSchool(String eslink, String schoolVersion, int schoolId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('selectedSchool', eslink);
+    await prefs.setString('schoolVersion', schoolVersion);
+    await prefs.setInt('selectedSchoolId', schoolId);
   }
 
   @override
@@ -1857,7 +1859,7 @@ class _SchoolScreenState extends State<SchoolScreen> {
 
                             if (selectedSchool != null &&
                                 selectedSchool!.isNotEmpty) {
-                              await _storeSelectedSchool(selectedSchool!);
+                              await _storeSelectedSchool(selectedSchool!, school.schoolVersion, school.id);
 
                               Navigator.push(
                                 context,

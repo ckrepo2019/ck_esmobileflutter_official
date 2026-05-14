@@ -14,8 +14,10 @@ import 'enrollment.dart';
 import 'scholarship_request.dart';
 import 'teacher_evaluation.dart';
 import 'billing_information.dart';
+import 'billing_information_v2.dart';
 import 'reportcard.dart';
 import 'class_schedule.dart';
+import 'class_schedule_v2.dart';
 import 'package:pushtrial/models/school_info.dart';
 import 'dart:convert';
 import 'dart:async';
@@ -59,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int type = 0;
 
   bool loading = true;
+  String schoolVersion = 'v1';
   Future<String?> host = CallApi().getImage();
   String? picurl;
   String? pic;
@@ -117,7 +120,10 @@ class _HomeScreenState extends State<HomeScreen> {
   getUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final json = preferences.getString('user');
-    setState(() {});
+    final version = preferences.getString('schoolVersion') ?? 'v1';
+    setState(() {
+      schoolVersion = version;
+    });
     user = json == null ? UserData.myUser : User.fromJson(jsonDecode(json));
     print('User data: $user');
     {
@@ -353,7 +359,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => ClassScheduleScreen(),
+                                    builder: (_) => schoolVersion == 'v2'
+                                        ? const ClassScheduleV2Screen()
+                                        : ClassScheduleScreen(),
                                   ),
                                 );
                                 break;
@@ -369,7 +377,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => BillingInformationPage(),
+                                    builder: (_) => schoolVersion == 'v2'
+                                        ? const BillingInformationV2Page()
+                                        : BillingInformationPage(),
                                   ),
                                 );
                                 break;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
+import '../schools/api/school_api.dart';
 import 'dart:convert';
 
 class LoadingScreen extends StatefulWidget {
@@ -15,18 +16,43 @@ class _LoadingScreenState extends State<LoadingScreen> {
     _checkLoginStatus();
   }
 
+  Future<void> _refreshSchoolVersion(SharedPreferences prefs) async {
+    final schoolId = prefs.getInt('selectedSchoolId');
+    if (schoolId == null) return;
+
+    try {
+      final response = await SchoolApi().getSchoolList();
+      if (response.statusCode == 200) {
+        final list = json.decode(response.body) as List;
+        final school = list.firstWhere(
+          (s) => s['id'] == schoolId,
+          orElse: () => null,
+        );
+        if (school != null) {
+          final version = (school['system_version'] == 2) ? 'v2' : 'v1';
+          await prefs.setString('schoolVersion', version);
+        }
+      }
+    } catch (_) {
+      // keep whatever version is already stored
+    }
+  }
+
   Future<void> _checkLoginStatus() async {
     await Future.delayed(Duration(seconds: 2));
 
     final prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString('user');
 
+    await _refreshSchoolVersion(prefs);
+
+    if (!mounted) return;
+
     if (userJson != null) {
       final user = User.fromJson(jsonDecode(userJson));
       Navigator.pushReplacementNamed(context, '/home', arguments: user);
     } else {
       Navigator.pushReplacementNamed(context, '/schools');
-      // Navigator.pushReplacementNamed(context, '/login');
     }
   }
 

@@ -380,7 +380,7 @@ class _ReportCardScreenState extends State<ReportCardScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'REPORT CARD-${gradelevel >= 17 ? 'COLLEGE' : 'SHS'}',
+          'REPORT CARD-${gradelevel >= 17 ? 'COLLEGE' : (gradelevel == 14 || gradelevel == 15) ? 'SHS' : 'K-12'}',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
